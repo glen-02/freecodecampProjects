@@ -1,0 +1,68 @@
+#! /bin/bash
+
+PSQL="psql -X --username=freecodecamp --dbname=salon --tuples-only -c"
+
+SERVICE_MENU() {
+  #get service lists
+  SRV_LIST=$($PSQL "SELECT * FROM services")
+  #read service_id, and name
+  echo "$SRV_LIST" | while read SERVICE_ID BAR NAME
+  do  
+    echo "$SERVICE_ID) $NAME"
+  done 
+  REGISTRATION_MENU
+}
+
+REGISTRATION_MENU(){
+  #ask user to pick service
+  echo "Please choose the service id"
+  read SERVICE_ID_SELECTED
+  #get service name
+  SRV_NAME=$($PSQL "SELECT name from services WHERE service_id=$SERVICE_ID_SELECTED")
+  #check if service exists
+  if [[ -z $SRV_NAME ]]
+  then
+    echo -e "Invalid service id\n"
+    #return to display service menu
+    SERVICE_MENU
+  else
+    #get phone number
+    echo "Please enter your phone number"
+    read CUSTOMER_PHONE
+    #get customer id
+    CUSTOMER_ID=$($PSQL "SELECT customer_id FROM customers WHERE phone='$CUSTOMER_PHONE'")
+    #check wether customer is registered
+    if [[ -z $CUSTOMER_ID ]]
+    then
+      ADD_CUSTOMER
+    else
+      #make appointment
+      APPOINTMENT_MENU
+    fi
+  fi
+}
+
+APPOINTMENT_MENU(){
+  #get id again
+  CUSTOMER_ID=$($PSQL "SELECT customer_id FROM customers WHERE phone='$CUSTOMER_PHONE'")
+  #get name
+  #get name
+      CUSTOMER_NAME=$($PSQL "SELECT name FROM customers WHERE customer_id=$CUSTOMER_ID")
+  #get time
+  echo "When are you available for the occation?"
+  read SERVICE_TIME
+  ADD_APPOINTMENT_RES=$($PSQL "INSERT INTO appointments(customer_id,service_id,time) VALUES($CUSTOMER_ID,$SERVICE_ID_SELECTED,'$SERVICE_TIME') ")
+  echo "I have put you down for a$SRV_NAME at $SERVICE_TIME, $(echo $CUSTOMER_NAME | sed -r 's/^ *| *$//g')."
+}
+
+ADD_CUSTOMER(){
+  echo "Please enter your name"
+  #get name
+  read CUSTOMER_NAME
+  #add to list
+  ADD_CUSTOMER_RES=$($PSQL "INSERT INTO customers(name,phone) VALUES('$CUSTOMER_NAME','$CUSTOMER_PHONE') ")
+  #make appointment
+  APPOINTMENT_MENU
+}
+
+SERVICE_MENU
