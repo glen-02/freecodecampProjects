@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int m[128][128];
+
+void printer(int r, int c,int k){
+	for(int i = r; i < r+k; i++){
+		for(int j = c; j < c+k; j++){
+			m[i][j] = 1;
+		}
+	}
+}
+
+void quadtree(string s,int r, int c,int k){
+	if(s.length() == 1){
+		printer(r,c,k);
+		/*if (s == "10"){
+			printer(r,c,k)
+		}
+		else if (s == "11"){
+			printer
+		}
+		else if (s == "12"){
+			printer
+		}
+		else{
+			printer
+		}*/
+	}
+	else{
+		//string last = s[s.length() - 1];
+		if(s.at(1) == '0'){
+			s.erase(1,1);
+			quadtree(s,r,c,k/2);
+		}
+		else if(s.at(1) == '1'){
+			c += k/2;
+			s.erase(1,1);
+			quadtree(s,r,c,k/2);
+		}
+		else if(s.at(1) == '2'){
+			r += k/2;
+			s.erase(1,1);
+			quadtree(s,r,c,k/2);
+		}
+		else{
+			r += k/2;
+			c += k/2;
+			s.erase(1,1);
+			quadtree(s,r,c,k/2);
+		}
+	}
+}
+
+int main(){
+	int x,r,c;
+	cin>>x;
+	string ans[x];
+	for(int i = 0; i < x; i++){
+		cin>>ans[i];
+	}
+	cin>>r>>c; //may need to be changed
+	int pow2=1;
+	while((pow2<r) || (pow2<c))
+	{
+		pow2 *=2;
+	}
+	for(int i=0; i<pow2; i++)
+	{
+		for(int j=0; j<pow2; j++)
+		{
+			m[i][j]=0;
+		}
+	}
+	for(int i = 0; i < x; i++){
+		quadtree(ans[i],0,0,pow2);
+		/*len = ans[i].length();
+		for (int j = len-1; j>=1; j--){
+			quadtree(ans[i].at(j),0,0,1);
+		}*/
+	}
+	for(int i = 0; i < r; i++){
+		for(int j = 0; j < c; j++){
+			cout<<m[i][j];
+			if(j < c-1){
+				cout<<" ";
+			}
+		}
+		cout<<endl;
+	}
+}
