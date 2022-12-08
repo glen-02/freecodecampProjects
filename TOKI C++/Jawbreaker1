@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int m[26][26];
+bool sudah[26][26];
+int count1;
+int x,y,b,k;
+/*bool putus(int r,int c){
+	if(m[r][c] == m[r+1][c] || m[r][c] == m[r-1][c] || m[r][c] == m[r][c+1] || m[r][c] == m[r][c-1] ){
+		return true;
+	}
+	else{
+		return false;
+	}
+}*/
+
+void search(int r,int c,int z){
+	if( m[r][c] == z && r>=0 && c>=0 && !(sudah[r][c]) ){
+		sudah[r][c] = true;
+		count1++;
+		//cout<<r<<" "<<c<<" "<<count1<<" "<<m[r][c]<<endl;
+		search(r+1,c,z);
+		search(r-1,c,z);
+		search(r,c+1,z);
+		search(r,c-1,z);
+	}
+	/*if( (m[r][c] == m[r+1][c]) && !(sudah[r+1][c]) ) {
+		sudah[r+1][c] = true;
+		sudah[r][c] = true;
+		count1++;
+		//cout<<1<<" "<<count1<<" "<<r<<" "<<c<<endl;
+		search(r+1,c);
+	}
+	if( (m[r][c] == m[r-1][c]) && !(sudah[r-1][c]) ) {
+		sudah[r-1][c] = true;
+		sudah[r][c] = true;
+		count1++;
+		//cout<<2<<" "<<count1<<" "<<r<<" "<<c<<endl;
+		search(r-1,c);
+	}
+	if( (m[r][c] == m[r][c+1]) && !(sudah[r][c+1]) ) {
+		sudah[r][c+1] = true;
+		sudah[r][c] = true;
+		count1++;
+		//cout<<3<<" "<<count1<<" "<<r<<" "<<c<<endl;
+		search(r,c+1);
+	}
+	if( (m[r][c] == m[r][c-1]) && !(sudah[r][c-1]) ) {
+		sudah[r][c-1] = true;
+		sudah[r][c] = true;
+		count1++;
+		//cout<<4<<" "<<count1<<" "<<r<<" "<<c<<endl;
+		search(r,c-1);
+	}*/
+}
+
+int main(){
+	cin>>b>>k;
+	for(int i=0; i<b; i++){ // kalo mau border 0 ksh i<= r+1
+		for(int j=0; j<k; j++){
+			/*if(i == 0 || i == r+1 || j == 0 || j == c+1){
+				m[i][j] = 0;
+			}*/
+			//else{
+				cin>>m[i][j];
+			//}
+		}
+	}
+	cin>>y>>x;
+	search( y, x, m[y][x] ); // klo mw border 0 ksh y+1,x+1
+	cout<<count1*(count1-1)<<endl;	
+}
